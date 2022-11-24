@@ -111,9 +111,9 @@ def get_scenes_to_render(scene_classes, scene_config, config):
             log.error(f"No scene named {scene_name} found")
     if result:
         return result
-    
+
     # another case
-    result=[]
+    result = []
     if len(scene_classes) == 1:
         scene_classes = [scene_classes[0]]
     else:
@@ -146,6 +146,19 @@ def main(config):
     if module is None:
         # If no module was passed in, just play the blank scene
         return [BlankScene(**scene_config)]
+
+    if hasattr(module, "TARGET"):
+        target = getattr(module, "TARGET")
+        if isinstance(target, str):
+            module = __import__(target)
+            target = [module(**scene_config)]
+        elif issubclass(target, Scene):
+            target = [target(**scene_config)]
+        elif isinstance(target, list):
+            target = [__import__(t) if isinstance(t, str) else t for t in target]
+            target = [t(**scene_config) for t in target]
+
+        return target
 
     all_scene_classes = get_scene_classes_from_module(module)
     scenes = get_scenes_to_render(all_scene_classes, scene_config, config)
