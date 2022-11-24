@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import os
+
 import numpy as np
 from PIL import Image
 
-from manimlib.utils.directories import get_raster_image_dir
+from manimlib.utils.directories import get_raster_image_dir, get_project_root
 from manimlib.utils.directories import get_vector_image_dir
 from manimlib.utils.file_ops import find_file
 
@@ -16,7 +18,10 @@ if TYPE_CHECKING:
 def get_full_raster_image_path(image_file_name: str) -> str:
     return find_file(
         image_file_name,
-        directories=[get_raster_image_dir()],
+        directories=[
+            os.path.join(get_project_root(), "assets/raster"),
+            get_raster_image_dir()
+        ],
         extensions=[".jpg", ".jpeg", ".png", ".gif", ""]
     )
 
@@ -24,7 +29,10 @@ def get_full_raster_image_path(image_file_name: str) -> str:
 def get_full_vector_image_path(image_file_name: str) -> str:
     return find_file(
         image_file_name,
-        directories=[get_vector_image_dir()],
+        directories=[
+            os.path.join(get_project_root(), "assets/vector"),
+            get_vector_image_dir()
+        ],
         extensions=[".svg", ".xdv", ""],
     )
 

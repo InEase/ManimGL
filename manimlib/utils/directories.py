@@ -1,9 +1,21 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
+from typing import Optional
 
 from manimlib.utils.customization import get_customization
 from manimlib.utils.file_ops import guarantee_existence
+from pyrootutils import find_root
+
+PROJECT_ROOT: Optional[str] = None
+
+
+def get_project_root() -> str:
+    global PROJECT_ROOT
+    if PROJECT_ROOT is None:
+        PROJECT_ROOT = find_root(search_from=__file__, indicator=[".git", "pyproject.toml"])
+    return PROJECT_ROOT
 
 
 def get_directories() -> dict[str, str]:
@@ -11,6 +23,8 @@ def get_directories() -> dict[str, str]:
 
 
 def get_temp_dir() -> str:
+    if (Path(get_project_root()) / "temp").exists():
+        return str(Path(get_project_root()) / "temp")
     return get_directories()["temporary_storage"]
 
 
